@@ -1,0 +1,189 @@
+\documentclass{article}
+% Comment the following line to NOT allow the usage of umlauts
+\usepackage[utf8]{inputenc}
+% Uncomment the following line to allow the usage of graphics (.png, .jpg)
+%\usepackage{graphicx}
+\usepackage{amsmath}
+% Start the document
+\begin{document}
+
+% Create a new 1st level heading
+\section{Finite Horizon Optimization}
+\textsc{Problem 1}
+$$
+\max_{\mathbf{a_t},\mathbf{c_t}}\sum_{t=0}^T\beta^t u(c_t) 
+$$
+$$
+s.t.\; a_{t+1}=Ra_t-c_t\;(t=0,1,\cdots ,T),a_{T+1}=0,
+$$
+where $\mathbf{a_t}=\{a_t\}_{t=1}^{T+1},\mathbf{c_t}=\{c_t\}_{t=0}^{T}$.\\ 
+
+
+\noindent\textbf{Solution 1} 
+Write down Lagrangian function 
+$$
+L=\sum_{t=0}^T\beta^t[u(c_t)-\lambda_t(a_{t+1}-Ra_t-c_t)]+\lambda_{T+1}a_{T+1}
+,
+$$
+and we get F.O.C. 
+$$
+\frac{\partial L}{\partial a_t}=\beta^t\lambda_t R-\beta^{t-1}\lambda_{t-1}=0\;(t=1,2,\cdots ,T),
+$$
+
+
+$$
+\frac{\partial L}{\partial a_{T+1}}=\lambda_{T+1}-\beta^{T}\lambda_{T}=0,
+$$
+
+$$
+\frac{\partial L}{\partial c_t}=\beta^t[u'(c_t)-\lambda_t]=0\;(t=0,1,\cdots ,T).
+$$
+which gives
+$$
+\beta R=\frac{u'(c_{t-1})}{u'(c_t)}(t=1,2,\cdots ,T)
+$$
+
+
+\noindent\textbf{Solution 2}
+The constraint conditions $a_{t+1}=Ra_t-c_t\;(t=0,1,\cdots ,T)$ can be rewritten as
+\[
+\frac{a_{t+1}}{R^{t+1}}=\frac{a_{t}}{R^{t}}-\frac{c_{t}}{R^{t+1}}\;(t=0,1,\cdots ,T).
+\]
+Adding up the equations above leads to
+\[
+\frac{a_{T+1}}{R^{T+1}}=a_{0}-\sum_{t=0}^T\frac{c_{t}}{R^{t+1}}\;(t=0,1,\cdots ,T).
+\]
+By applying $a_{T+1}=0$ we get the equivalent optimization problem
+$$
+\max_{\mathbf{c_t}}\sum_{t=0}^T\beta^t u(c_t)
+$$
+$$
+s.t.\; \sum_{t=0}^{T}\frac{c_t}{R^t}=Ra_0,
+$$
+where $\mathbf{c_t}=\{c_t\}_{t=0}^{T}$.
+~\\
+
+\section{Bellman Equation}
+\textsc{Problem 2}
+$$
+\max_{\mathbf{a_t},\mathbf{c_t}}\sum_{t=0}^\infty \beta^t u(c_t) 
+$$
+$$
+s.t.\; k_{t+1}=f(k_t)+k_t-\delta k_t-c_t\;(t=0,1,\cdots ,T),k_{t}\ge 0,
+$$
+Bellman equation can be stated as
+$$
+V(k_t)=\max_{c_t}\{u(c_t)+\beta V(k_{t+1})\}
+$$
+By evolope theorem, we have
+$$
+\frac{\partial V(k_t)}{\partial k_t}=V'(k_t)=\beta V'(k_{t+1})[f'(k_t)+1-\delta]
+$$
+$$
+\frac{\partial V(k_t)}{\partial c_t}=0=u'(c_t)-\beta V'(k_{t+1})
+$$
+The system of simultineous equations derives 
+$$
+u'(c_t)=\beta u'(c_{t+1})[f'(k_{t+1})+1-\delta ]
+$$
+Let $$F(k_t)=f(k_t)+k_t-\delta k_t$$ and we can rewrite it as 
+\begin{equation}
+	u'(F(k_t)-k_{t+1})=\beta u'(F(k_{t+1})-k_{t+2})F'(k_{t+1}).
+\end{equation}
+So as to find a stabel solution $k^*$, we can solve
+$$
+u'(F(k^*)-k^*)=\beta u'(F(k^*)-k)F'(k^*)
+$$
+namely
+$$
+\beta F'(k^*)=1.
+$$
+When $t$ is sufficiently large, $k_t$ will be sufficiently close to $k^*$ while $c_t$ approaches $c^*$. Let
+$$
+g(k_t,k_{t+1},k_{t+2})=-u'(F(k_t)-k_{t+1})+\beta u'(F(k_{t+1})-k_{t+2})F'(k_{t+1}).
+$$
+We see $g(k_t,k_{t+1},k_{t+2})=0$ at $(k_t,k_{t+1},k_{t+2})=(k^*,k^*,k^*)$. Take Taylor expansion of order one at $\mathbf{k^*}=(k^*,k^*,k^*)$ and we get the linearization of $g$
+\begin{align*}	
+&  \widetilde{g}(k_t,k_{t+1},k_{t+2})\\
+= &\;g(\mathbf{k^*})+\frac{\partial g(\mathbf{k^*})}{\partial k_t}(k_t-k^*)+\frac{\partial g(\mathbf{k^*})}{\partial k_{t+1}}(k_{t+1}-k^*)+\frac{\partial g(\mathbf{k^*})}{\partial k_{t+2}}(k_{t+2}-k^*)\\
+= & -u''(c^*)F'(k^*)(k_t-k^*)+[u''(c^*)+\beta u''(c^*)F'(k^*)^2+\beta u'(c^*)F''(k^*)](k_{t+1}-k^*)\\
+& -\beta u''(c^*)F'(k^*)(k_{t+2}-k^*).
+\end{align*}
+Indeed, we have also linearized the nonlinear implicit difference equation (1). Let $z_t=k_t-k^*$. The following second order difference equation can describe the behavior of $k_t$ approximately when $t$ is sufficiently large
+\[
+z_{t+2}= \left[\frac{1}{\beta F'(k^*)}+ F'(k^*)+\frac{ u'(c^*)/u''(c^*)}{F'(k^*)/F''(k^*)}\right]z_{t+1}-\frac{1}{\beta}z_t
+\]
+Since $\beta F'(k^*)=1$, let $s=\dfrac{ u'(c^*)/u''(c^*)}{F'(k^*)/F''(k^*)}$ and we can give the matrix form of the difference equation
+$$
+\begin{bmatrix}
+z_{t+2}\\
+z_{t+1}  
+\end{bmatrix}
+=
+\begin{bmatrix}
+1+\beta^{-1}+s&-\beta^{-1}\\
+1  &0
+\end{bmatrix}
+\begin{bmatrix}
+z_{t+1}\\
+z_{t}  
+\end{bmatrix}
+=A
+\begin{bmatrix}
+z_{t+1}\\
+z_{t}  
+\end{bmatrix}.
+$$
+The characteristic polynomial of $A$ is
+\[
+p(\lambda)=|\lambda E-A|=\lambda^2-(1+\beta^{-1}+s)\lambda+\beta^{-1}.
+\]
+Note $p(0)=\beta^{-1}>0$ and $p(1)=-s<0$. It implies $A$ has two positive real roots $\lambda_1< 1$ and $\lambda_2>1$. Let 
+$$
+A=TJT^{-1}=
+\begin{bmatrix}
+\beta^{-1}&\lambda_2\\
+\lambda_1+1+\beta^{-1}+s&1  
+\end{bmatrix}
+\begin{bmatrix}
+\lambda_1&\\
+ &\lambda_2
+\end{bmatrix}
+\begin{bmatrix}
+\beta^{-1}&\lambda_2\\
+\lambda_1+1+\beta^{-1}+s&1  
+\end{bmatrix}^{-1}
+.
+$$
+We have 
+\[
+A^n=T
+\begin{bmatrix}
+\lambda_1^n&\\
+&\lambda_2^n
+\end{bmatrix}
+T^{-1}
+\]
+and
+\[
+\begin{bmatrix}
+z_{t}\\
+z_{t-1}  
+\end{bmatrix}
+=T
+\begin{bmatrix}
+\lambda_1^{n-1}&\\
+&\lambda_2^{n-1}
+\end{bmatrix}
+T^{-1}
+\begin{bmatrix}
+z_{1}\\
+z_{0}  
+\end{bmatrix}
+\]
+
+% Uncomment the following two lines if you want to have a bibliography
+%\bibliographystyle{alpha}
+%\bibliography{document}
+
+\end{document}
